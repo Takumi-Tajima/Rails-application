@@ -8,16 +8,17 @@ class SessionsController < ApplicationController
       # ユーザーログイン後にユーザー情報のページにリダイレクトする
       reset_session
       log_in user
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       redirect_to user
     else
       # エラーメッセージを作成する
-      flash.now[:danger] = 'Invalid email/password combination' # 本当は正しくない
+      flash.now[:danger] = 'Invalid email/password combination'
       render 'new', status: :unprocessable_entity
     end
   end
 
   def destroy
-    log_out
+    log_out if logged_in?
     redirect_to root_url, status: :see_other
   end
 end
